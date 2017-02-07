@@ -1,10 +1,11 @@
 function getStats(txt) {
-	let words = txt.split(/[^a-zA-Z0-9']/g).filter(function (word) {
+	let words = txt.split(/[^\w']+|_+/g).filter(function (word) {
 			return word.length > 0;
 		});
 
-	for (let i in words)
+	for (let i in words) {
 		words[i] = words[i].toLowerCase();
+	}
 
 	words.sort(); // alphabetize
 
@@ -51,31 +52,22 @@ function findMostFrequent(words) {
 function findPalindromes(words) {
 	let palindromes = [];
 	for (let word of words) {
-		if (isPalindrome(word))
+		if (isPalindrome(word)) {
 			palindromes.push(word);
+		}
 	}
 
 	return palindromes;
 }
 
 function isPalindrome(word) {
-	let chars = word.split("");
-	if (chars.length <= 2) {
-		return false
-	} else {
-		let left = 0;
-		let right = chars.length - 1;
-		while (left < right) {
-			if (chars[left] != chars[right]) {
-				return false;
-			}
+	let chars = word.split('');
 
-			left++;
-			right--;
-		}
+	if (chars.length <= 2)
+		return false;
 
+	if (word === chars.reverse().join(''))
 		return true;
-	}
 
 	return false;
 }
@@ -89,9 +81,8 @@ function findLongest(words) {
 
 function getAverageLength(words) {
 	let numChars = 0;
-	for (let word of words) {
+	for (let word of words) 
 		numChars += word.length;
-	}
 
 	return numChars / words.length;
 }
@@ -99,8 +90,9 @@ function getAverageLength(words) {
 function getMaxLength(words) {
 	let currentMax = "";
 	for (let word of words) {
-		if (word.length > currentMax.length)
+		if (word.length > currentMax.length) {
 			currentMax = word;
+		}
 	}
 
 	return currentMax.length;
