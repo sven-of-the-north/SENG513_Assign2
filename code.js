@@ -1,17 +1,17 @@
 function getStats(txt) {
-	let words = txt.toLowerCase().split(/[^\w']+|('{2,})|_+/g).filter(function (word) {
-			return word === undefined ? false : word.length > 0;
+	let words = txt.toLowerCase().split(/[\W_]+/g).filter(function (word) {
+			return word.length > 0;
 		});
 
 	let lines = txt.split(/[\r\n]/);
 	let nonEmptyLines = lines.filter(function (line) {
-			return line.length > 0 && line.trim().length !== 0;
+			return line.trim().length > 0;
 		});
 
 	return {
 		nChars: txt.length,
 		nWords: words.length,
-		nLines: lines.length,
+		nLines: getNumOfLines(lines),
 		nNonEmptyLines: nonEmptyLines.length,
 		averageWordLength: getAverageLength(words),
 		maxLineLength: getMaxLength(lines),
@@ -51,12 +51,15 @@ function findLongest(words) {
 
 function findPalindromes(words) {
 	return words.filter(
-		function(word) {
+		function (word) {
 		return (word.split('').length > 2) && (word === word.split('').reverse().join(''));
 	});
 }
 
 function getAverageLength(words) {
+	if (words.length === 0)
+		return 0;
+
 	let numChars = 0;
 	for (let word of words)
 		numChars += word.length;
@@ -69,4 +72,11 @@ function getMaxLength(lines) {
 		function (first, second) {
 		return second.length - first.length;
 	})[0].length;
+}
+
+function getNumOfLines(lines) {
+	if (lines.length > 1)
+		return lines.length;
+	else
+		return lines[0].length === 0 ? 0 : 1;
 }
