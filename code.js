@@ -1,11 +1,11 @@
 function getStats(txt) {
-	let words = txt.split(/[\W_]/g).filter(function (word) {
+	let words = txt.split(/[^a-zA-Z0-9']/g).filter(function (word) {
 			return word.length > 0;
 		});
-		
+
 	for (let i in words)
 		words[i] = words[i].toLowerCase();
-	
+
 	words.sort(); // alphabetize
 
 	let lines = txt.split(/[\r\n]/);
@@ -40,10 +40,10 @@ function findMostFrequent(words) {
 	freqArray.sort(function (first, second) {
 		return second[1] - first[1];
 	});
-	
+
 	stringArray = [];
 	for (let elem of freqArray.slice(0, 10))
-		stringArray.push( elem[0] + "(" + elem[1] + ")");
+		stringArray.push(elem[0] + "(" + elem[1] + ")");
 
 	return stringArray;
 }
@@ -99,7 +99,7 @@ function getAverageLength(words) {
 function getMaxLength(words) {
 	let currentMax = "";
 	for (let word of words) {
-		if ( word.length > currentMax.length)
+		if (word.length > currentMax.length)
 			currentMax = word;
 	}
 
