@@ -1,17 +1,11 @@
 function getStats(txt) {
-	let words = txt.split(/[^\w']+|_+/g).filter(function (word) {
-			return word.length > 0;
+	let words = txt.toLowerCase().split(/[^\w']+|('{2,})|_+/g).filter(function (word) {
+			return word === undefined ? false : word.length > 0;
 		});
-
-	for (let i in words) {
-		words[i] = words[i].toLowerCase();
-	}
-
-	words.sort(); // alphabetize
 
 	let lines = txt.split(/[\r\n]/);
 	let nonEmptyLines = lines.filter(function (line) {
-			return line.length > 0;
+			return line.length > 0 && line.trim().length !== 0;
 		});
 
 	return {
@@ -29,17 +23,16 @@ function getStats(txt) {
 
 function findMostFrequent(words) {
 	let map = new Map();
-	for (let word of words) {
+	for (let word of words)
 		map.has(word) ? map.set(word, map.get(word) + 1) : map.set(word, 1);
-	}
 
 	freqArray = [];
-	for (let[key, value]of map) {
+	for (let[key, value]of map)
 		freqArray.push([key, value]);
-	}
 
-	freqArray.sort(function (first, second) {
-		return second[1] - first[1];
+	freqArray.sort(
+		function (first, second) {
+		return (second[1] - first[1]) === 0 ? second[0] < first[0] : second[1] - first[1];
 	});
 
 	stringArray = [];
@@ -49,51 +42,31 @@ function findMostFrequent(words) {
 	return stringArray;
 }
 
-function findPalindromes(words) {
-	let palindromes = [];
-	for (let word of words) {
-		if (isPalindrome(word)) {
-			palindromes.push(word);
-		}
-	}
-
-	return palindromes;
-}
-
-function isPalindrome(word) {
-	let chars = word.split('');
-
-	if (chars.length <= 2)
-		return false;
-
-	if (word === chars.reverse().join(''))
-		return true;
-
-	return false;
-}
-
 function findLongest(words) {
 	return words.sort(
 		function (first, second) {
-		return second.length - first.length;
+		return (second.length - first.length) === 0 ? second < first : second.length - first.length;
 	}).slice(0, 10);
+}
+
+function findPalindromes(words) {
+	return words.filter(
+		function(word) {
+		return (word.split('').length > 2) && (word === word.split('').reverse().join(''));
+	});
 }
 
 function getAverageLength(words) {
 	let numChars = 0;
-	for (let word of words) 
+	for (let word of words)
 		numChars += word.length;
 
 	return numChars / words.length;
 }
 
-function getMaxLength(words) {
-	let currentMax = "";
-	for (let word of words) {
-		if (word.length > currentMax.length) {
-			currentMax = word;
-		}
-	}
-
-	return currentMax.length;
+function getMaxLength(lines) {
+	return lines.sort(
+		function (first, second) {
+		return second.length - first.length;
+	})[0].length;
 }
