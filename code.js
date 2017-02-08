@@ -7,7 +7,7 @@ function getStats(txt) {
 	let nonEmptyLines = lines.filter(function (line) {
 			return line.trim().length > 0;
 		});
-
+		
 	return {
 		nChars: txt.length,
 		nWords: words.length,
@@ -50,10 +50,15 @@ function findLongest(words) {
 }
 
 function findPalindromes(words) {
-	return words.filter(
+	let palindromes = words.filter(
 		function (word) {
 		return (word.split('').length > 2) && (word === word.split('').reverse().join(''));
 	});
+	
+	return palindromes.filter(
+		function(word, index, self) {
+		return index == self.indexOf(word);
+		});
 }
 
 function getAverageLength(words) {
