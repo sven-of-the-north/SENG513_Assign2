@@ -7,7 +7,7 @@ function getStats(txt) {
 	let nonEmptyLines = lines.filter(function (line) {
 			return line.trim().length > 0;
 		});
-		
+
 	return {
 		nChars: txt.length,
 		nWords: words.length,
@@ -15,9 +15,9 @@ function getStats(txt) {
 		nNonEmptyLines: nonEmptyLines.length,
 		averageWordLength: getAverageLength(words),
 		maxLineLength: getMaxLength(lines),
-		palindromes: "[ " + findPalindromes(words).join(", ") + " ]",
-		longestWords: "[ " + findLongest(words).join(", ") + " ]",
-		mostFrequentWords: "[ " + findMostFrequent(words).join(", ") + " ]"
+		palindromes: findPalindromes(words),
+		longestWords: findLongest(words),
+		mostFrequentWords: findMostFrequent(words)
 	};
 }
 
@@ -32,7 +32,10 @@ function findMostFrequent(words) {
 
 	freqArray.sort(
 		function (first, second) {
-		return (second[1] - first[1]) === 0 ? second[0] < first[0] : second[1] - first[1];
+		if (second[1] === first[1])
+			return second[0] < first[0] ? 1 : -1;
+		else
+			return second[1] - first[1];
 	});
 
 	stringArray = [];
@@ -43,22 +46,24 @@ function findMostFrequent(words) {
 }
 
 function findLongest(words) {
-	return words.sort(
-		function (first, second) {
-		return (second.length - first.length) === 0 ? second < first : second.length - first.length;
-	}).slice(0, 10);
+	let longest = new Set(words.sort(
+				function (first, second) {
+				if (second.length === first.length)
+					return second < first ? 1 : -1;
+				else
+					return second.length - first.length;
+			}));
+
+	return [...longest].slice(0, 10);
 }
 
 function findPalindromes(words) {
-	let palindromes = words.filter(
-		function (word) {
-		return (word.split('').length > 2) && (word === word.split('').reverse().join(''));
-	});
-	
-	return palindromes.filter(
-		function(word, index, self) {
-		return index == self.indexOf(word);
-		});
+	let palindromes = new Set(words.filter(
+				function (word) {
+				return (word.split('').length > 2) && (word === word.split('').reverse().join(''));
+			}))
+
+		return [...palindromes];
 }
 
 function getAverageLength(words) {
